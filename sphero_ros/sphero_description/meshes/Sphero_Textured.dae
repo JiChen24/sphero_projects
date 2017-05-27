@@ -17,7 +17,7 @@
   </asset>
   <library_images>
     <image id="file1-image" name="file1">
-      <init_from>file:///SpheroTexture.jpg</init_from>
+      <init_from>SpheroTexture.jpg</init_from>
     </image>
   </library_images>
   <library_materials>

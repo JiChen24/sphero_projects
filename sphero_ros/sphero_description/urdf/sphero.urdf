@@ -23,7 +23,7 @@
     <visual>
       <origin xyz=" 0 0 0" rpy="3.14 0 0" />
       <geometry>
-	<mesh filename="package://sphero_description/meshes/Sphero_Textured.dae" scale=" 0.0127 0.0127 0.0127"/>
+	<mesh filename="package://sphero_description/meshes/Sphero_Textured.dae" scale=" 0.8 0.8 0.8"/>
       </geometry>
     </visual>
 
