@@ -1,46 +1,57 @@
 RUNNING_ROS = False
+
 if RUNNING_ROS:
     import rospy
     import rosnode
     import roslib.scriptutil as scriptutil
     import rostopic
+    import rospkg
+
 import os
-import rospkg
 import socket
 import functools
-import pydot
+#import pydot
 import ast
 import getpass
 import itertools
 import copy
 import StringIO
-import yaml
+#import yaml
 import time
 import re
 import sys
 
-from qt_gui.plugin import Plugin
-from python_qt_binding import loadUi
-from python_qt_binding.QtGui import QWidget, QTabWidget, QListWidget, QListWidgetItem, QGridLayout, QFormLayout
-import python_qt_binding.QtGui as QtGui
-import python_qt_binding.QtCore as QtCore
+if os.name != 'nt':
+    from qt_gui.plugin import Plugin
+    from python_qt_binding import loadUi
+    from python_qt_binding.QtGui import QWidget, QTabWidget, QListWidget, QListWidgetItem, QGridLayout, QFormLayout
+    import python_qt_binding.QtGui as QtGui
+    import python_qt_binding.QtCore as QtCore
+else:
+    #from qt_gui.plugin import Plugin
+    from PyQt4.uic import loadUi
+    from PyQt4.QtGui import QWidget, QTabWidget, QListWidget, QListWidgetItem, QGridLayout, QFormLayout
+    import PyQt4.QtGui as QtGui
+    import PyQt4.QtCore as QtCore
 
 import sphero
-
 
 import logging
 import sphero_control_logging
 gui_logger = logging.getLogger("gui_logger")
 
 #command#
-# rqt --standalone rqt_grounding_and_analysis
+# rqt --standalone sphero_control
 
-class SpheroControl(Plugin):
-
-    def __init__(self, context):
-        super(SpheroControl, self).__init__(context)
+#class SpheroControl(Plugin):
+#    def __init__(self, context):
+#        super(SpheroControl, self).__init__(context)
         # Give QObjects reasonable names
-        self.setObjectName('SpheroControlPlugin')
+#        self.setObjectName('SpheroControlPlugin')
+class SpheroControl(object):
+    def __init__(self):
+        window = QWidget()
+        context = QtGui.QVBoxLayout(window)
 
         if RUNNING_ROS:
             # Process standalone plugin command-line arguments
@@ -58,7 +69,11 @@ class SpheroControl(Plugin):
         # Create QWidget
         self._widget = QtGui.QWidget()
         # Get path to UI file which should be in the "resource" folder of this package
-        ui_file = os.path.join(rospkg.RosPack().get_path('sphero_control'), 'resource', 'controlmainwidget.ui')
+        if RUNNING_ROS:
+            ui_file = os.path.join(rospkg.RosPack().get_path('sphero_control'), 'resource', 'controlmainwidget.ui')
+        else:
+            ui_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../', 'resource', 'controlmainwidget.ui')
+
         # Extend the widget with all attributes and children from UI file
         loadUi(ui_file, self._widget)
         # Give QObjects reasonable names
@@ -118,7 +133,7 @@ class SpheroControl(Plugin):
         gui_logger.info('Sphero name is: {0}'.format(self._lineEdit_name.text()))
         r = re.compile('Sphero-.{3}')
         if r.match(self._lineEdit_name.text()) is not None:
-            self.connect_to_sphero(self._lineEdit_name.text())
+            self.connect_to_sphero(str(self._lineEdit_name.text()))
         else:
             gui_logger.warning('Sphero name is incorrect')
 
@@ -131,7 +146,11 @@ class SpheroControl(Plugin):
 
     def on_pushButton_direction_clicked(self, mode):
         item = QtGui.QListWidgetItem(mode)
-        self.listWidget_commands.insertItem(self.listWidget_commands.count(), item)
+        if self.listWidget_commands.selectionModel().selectedIndexes():
+            #gui_logger.info(self.listWidget_commands.currentRow())
+            self.listWidget_commands.insertItem(self.listWidget_commands.currentRow()+1, item)
+        else:
+            self.listWidget_commands.insertItem(self.listWidget_commands.count(), item)
         gui_logger.info('Got {0} command'.format(mode))
 
     def on_pushButton_execute_clicked(self):
@@ -139,10 +158,14 @@ class SpheroControl(Plugin):
         for idx in range(self.listWidget_commands.count()):
             gui_logger.info("Execute {0}".format(self.listWidget_commands.item(idx).text()))
             self.set_velocity(self.listWidget_commands.item(idx).text())
+        gui_logger.info('----Execute Done!----')
 
     def connect_to_sphero(self, target_name):
-        target_name = 'Sphero-GGW'
-        self.target_dict = {'Sphero-GGW':'68:86:E7:08:95:5F'}
+        self.target_dict = {'Sphero-GGW':'68:86:E7:08:95:5F',
+                            'Sphero-RGW':'68:86:E7:09:77:D4',
+                            'Sphero-WRB':'68:86:E7:09:22:BF',
+                            'Sphero-WPP':'68:86:E7:08:84:9E',
+                            'Sphero-YOO':'68:86:E7:08:71:0B'}
 
         self.s = sphero.SpheroNode(target_name, self.target_dict[target_name], 1)
         gui_logger.info('Connecting to Sphero name: {0} ...'.format(target_name))
@@ -165,7 +188,7 @@ class SpheroControl(Plugin):
             self.s.core_cmd_vel(vx, vy)
 
         self.s.core_cmd_vel(0, 0)
-
+        #time.sleep(0.5)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
@@ -192,6 +215,7 @@ if __name__ == "__main__":
     app = QtGui.QApplication([])
     window = QWidget()
     layout = QtGui.QVBoxLayout(window)
-    a = SpheroControl(layout)
+    #a = SpheroControl(layout)
+    a = SpheroControl()
     a._widget.show()
     sys.exit(app.exec_())

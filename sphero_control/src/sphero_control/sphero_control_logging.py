@@ -51,10 +51,10 @@ def setupLogging(loggerLevel=None):
 
     # also save to file
     # read from terminal: tail -f /var/log/syslog -f /var/tmp/contoller_logger.log
-    for logger_name, logger in loggers.iteritems():
-        h_file = logging.FileHandler('/var/tmp/'+logger_name+'_logger.log', mode='w')
-        h_file.setFormatter(f)
-        logger.addHandler(h_file)
+    #for logger_name, logger in loggers.iteritems():
+        #h_file = logging.FileHandler('/var/tmp/'+logger_name+'_logger.log', mode='w')
+        #h_file.setFormatter(f)
+        #logger.addHandler(h_file)
 
     cfg = ConfigParser.ConfigParser()
 
