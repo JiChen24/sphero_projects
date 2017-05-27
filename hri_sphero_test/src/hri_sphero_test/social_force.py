@@ -21,7 +21,7 @@ from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
 from sphero_node.cfg import ReconfigConfig
 
 SCALE = 40
-IS_ROS_NODE = False
+IS_ROS_NODE = True
 CONTROLLED_AGENT = 'sphero_ggw'
 STOP_DISTANCE = 0.2
 

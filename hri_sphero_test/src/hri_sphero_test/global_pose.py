@@ -210,9 +210,9 @@ if __name__ == "__main__":
 
     prev_time = rospy.Time.now()
 
-    #global_pose_obj._current_odom = [0,1] # test
-    #global_pose_obj._init_odom = [0,0] # test
-    #global_pose_obj._current_odom_from_imu = [0,0] # test
+    global_pose_obj._current_odom = [0,0] # test
+    global_pose_obj._init_odom = [0,0] # test
+    global_pose_obj._current_odom_from_imu = [0,0] # test
 
     while not rospy.is_shutdown():
         ####################
