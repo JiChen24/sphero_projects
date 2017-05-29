@@ -31,23 +31,24 @@
 #***********************************************************
 #author: Melonee Wise
 
-import rospy
 
 import math
 import sys
-import tf
-import PyKDL
+#import tf
+#import PyKDL
 
-from sphero_driver import sphero_driver
-import dynamic_reconfigure.server
+import sphero_driver
+#import dynamic_reconfigure.server
 
-from sensor_msgs.msg import Imu
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Pose, Quaternion, Twist, TwistWithCovariance, Vector3
-from sphero_node.msg import SpheroCollision
-from std_msgs.msg import ColorRGBA, Float32, Bool
-from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
-from sphero_node.cfg import ReconfigConfig
+
+#import rospy
+#from sensor_msgs.msg import Imu
+#from nav_msgs.msg import Odometry
+#from geometry_msgs.msg import Point, Pose, Quaternion, Twist, TwistWithCovariance, Vector3
+#from sphero_node.msg import SpheroCollision
+#from std_msgs.msg import ColorRGBA, Float32, Bool
+#from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
+#from sphero_node.cfg import ReconfigConfig
 
 import argparse
 import logging
@@ -95,10 +96,10 @@ class SpheroNode(object):
         else:
             self.robot = sphero_driver.Sphero()
 
-        self.imu = Imu()
-        self.imu.orientation_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
-        self.imu.angular_velocity_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
-        self.imu.linear_acceleration_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
+        #self.imu = Imu()
+        #self.imu.orientation_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
+        #self.imu.angular_velocity_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
+        #self.imu.linear_acceleration_covariance = [1e-6, 0, 0, 0, 1e-6, 0, 0, 0, 1e-6]
         #self.last_cmd_vel_time = rospy.Time.now()
         #self.last_diagnostics_time = rospy.Time.now()
         self.cmd_heading = 0

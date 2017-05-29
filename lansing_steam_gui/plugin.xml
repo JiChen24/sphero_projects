@@ -1,5 +1,5 @@
 <library path="src">
-  <class name="Sphero Control Plugin" type="sphero_control.sphero_control.SpheroControl" base_class_type="rqt_gui_py::Plugin">
+  <class name="Sphero Control Plugin" type="lansing_steam_gui.sphero_control.SpheroControl" base_class_type="rqt_gui_py::Plugin">
     <description>
       This is a Python GUI plugin to:
       (1) Give Commands to Sphero and then execute it!
@@ -9,13 +9,13 @@
       <group>
         <label>Group</label>
       </group>
-      <group>
+      <group>g
         <label>Subgroup</label>
       </group>
       -->
-      <label>Sphero Control Plugin</label>
+      <label>Lansing STEAM GUI Plugin</label>
       <icon type="theme">system-help</icon>
-      <statustip>Python GUI plugin forSphero Control </statustip>
+      <statustip>Python GUI plugin for Lansing STEAM</statustip>
     </qtgui>
   </class>
 </library>

@@ -3,6 +3,6 @@
     <!-- transform from map to world -->
     <node pkg="tf" type="static_transform_publisher" name="world_to_map_broadcaster" args="0 0 0 0 0 0 1 world map 100" />
 
-    <node ns="sphero_ggw" name="global_pose" pkg="hri_sphero_test" type="global_pose.py" args="--robot_start_pose '[0,0,0]' --robot_frame sphero_ggw" output="screen"/>
+    <node ns="sphero_bb8" name="global_pose" pkg="hri_project_fall16" type="global_pose.py" args="--robot_start_pose '[0,0,0]' --robot_frame sphero_bb8" output="screen"/>
 
 </launch>
