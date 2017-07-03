@@ -30,10 +30,10 @@ def save_odometry(data):
     # magnitude min 30 for lab carpet
     # magnitude min 150 for lab carpet with vicon tracker cup
 #waypoints=numpy.array([ [1,1], [-1,1] ])
-waypoints=numpy.array([ [2,2] ])
+waypoints=numpy.array([ [2,2],[-2,2],[0,0] ])
 size_waypoints=waypoints.shape #[m,n] length and width of waypoints
 num_waypoints=size_waypoints[0] #first entry is length (width is 2-(x,y))
-vel_mag=100
+vel_mag=90
 
 #loc_goal=[]
 #loc_goal.append(1)
@@ -49,14 +49,14 @@ if __name__=="__main__":
     rospy.init_node(sphero_name+"_test_vel")
 
     # publish to topics
-    pub = rospy.Publisher(sphero_name+'/cmd_vel', geometry_msgs.msg.Twist, queue_size=10, latch=True)
-    rate = rospy.Rate(10) # set publish rate
+    pub = rospy.Publisher(sphero_name+'/cmd_vel', geometry_msgs.msg.Twist, queue_size=1, latch=True)
+    rate = rospy.Rate(2) # set publish rate
 
     # subscribe to odometry data
     rospy.Subscriber(sphero_name+'/odom', Odometry, callback=save_odometry)
     
     #Initialize the sphero as a vicon tracked object
-    a = vt.ViconTrackerPoseHandler(None, None, "",51018, vtName)
+    a = vt.ViconTrackerPoseHandler(None, None, "",portNum, vtName)
 
     #Calibrate sphero frame
     
@@ -67,9 +67,10 @@ if __name__=="__main__":
     print init_calib_loc[0]
     print init_calib_loc[1]
     while (time.time() - startCalib < 2):
-        vel_msg = geometry_msgs.msg.Twist(geometry_msgs.msg.Vector3(100,0,0), \
+        vel_msg = geometry_msgs.msg.Twist(geometry_msgs.msg.Vector3(vel_mag,0,0), \
                                           geometry_msgs.msg.Vector3(0,0,0))
         pub.publish(vel_msg)
+        rate.sleep()
 
     vel_msg = geometry_msgs.msg.Twist(geometry_msgs.msg.Vector3(0,0,0), \
                                           geometry_msgs.msg.Vector3(0,0,0))
@@ -83,6 +84,8 @@ if __name__=="__main__":
     calib_theta = numpy.arctan2(calibVect[1],calibVect[0])
     sphero_theta = calib_theta
     print "Sphero Theta is "+str(180/math.pi*sphero_theta)+"\n"
+
+    locTimer = time.time()
 #loop through the goal points and move to all of them
 for ind in range(0,num_waypoints):
 #index of first goal is 0, last is num_waypoints-1
@@ -90,7 +93,7 @@ for ind in range(0,num_waypoints):
     loc_goal=[]
     loc_goal.append(waypoints[ind][0])
     loc_goal.append(waypoints[ind][1])	
-
+    print "Going to new waypoint"
     #get the sphero's current location from vicon
     rate.sleep()
     loc_init=a.getPose()
@@ -103,6 +106,10 @@ for ind in range(0,num_waypoints):
     while (dist2goal > 0.2): # not at goal point
         
         loc=a.getPose()
+        if (time.time()-locTimer >1):
+            print "X: "+str(loc[0])
+            print "Y: "+str(loc[1])
+            locTimer = time.time()
         vect2goal = numpy.array([(loc_goal[0]-loc[0]),(loc_goal[1]-loc[1])])
         dist2goal =  numpy.sqrt(vect2goal.dot(vect2goal))
         #Calculate the required vel_msg to reach the goal point from the current location in the vicon frame
@@ -128,10 +135,10 @@ for ind in range(0,num_waypoints):
                                           geometry_msgs.msg.Vector3(0,0,0))
 
         #rospy.loginfo("Velocity: {0}".format(vel_msg))
-
+        if (loc[0] == 0 and loc[1] ==0):
+            vel_msg = vel_msg_zero
         pub.publish(vel_msg)
-     
-
+        rate.sleep()
 rospy.loginfo("Last Odometry: {0}".format(odometry))
 rospy.loginfo("Last Odometry: {0}".format(odometry))
 print loc
