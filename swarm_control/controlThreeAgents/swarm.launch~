@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+	<node ns="sphero_prr" name="sphero_prr" pkg="sphero_node" type="sphero.py" args="--target_name Sphero-PRR --target_addr 68:86:E7:09:77:2C --port 1" respawn='true' output="screen"/>
+	<node ns="sphero_rgw" name="sphero_rgw" pkg="sphero_node" type="sphero.py" args="--target_name Sphero-RGW --target_addr 68:86:E7:09:77:D4 --port 1" respawn='true' output="screen"/>
+    <node ns="sphero_rpp" name="sphero_rpp" pkg="sphero_node" type="sphero.py" args="--target_name Sphero-RPP --target_addr 68:86:E7:09:2E:FE --port 1" respawn='true' output="screen"/>
+
+</launch>
